@@ -1,0 +1,17 @@
+{
+  "name": "WeatherGPT — AI Weather Intelligence",
+  "short_name": "WeatherGPT",
+  "description": "Conversational Meteorological Intelligence & Disaster Platform for India",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
