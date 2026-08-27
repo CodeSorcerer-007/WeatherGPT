@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { ChatMessage, RiskLevel } from '@/types';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage, AVAILABLE_LANGUAGES } from '@/context/LanguageContext';
 import { ProvenanceBadge } from './ProvenanceBadge';
 import {
   Bot,
@@ -18,6 +18,7 @@ import {
   ShieldCheck,
   TrendingUp,
   Compass,
+  Radio,
 } from 'lucide-react';
 import { speakText } from '@/lib/speechUtils';
 
@@ -31,6 +32,8 @@ export function MessageBubble({ message }: MessageBubbleProps) {
   const [hasCopied, setHasCopied] = useState(false);
 
   const isUser = message.sender === 'user';
+  const msgLang = message.language || language;
+  const langObj = AVAILABLE_LANGUAGES.find((l) => l.code === msgLang);
 
   const handleSpeak = () => {
     if (isSpeaking) {
@@ -42,7 +45,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
     const textToSpeak = message.text;
     speakText(
       textToSpeak,
-      message.language || language,
+      msgLang,
       1.0,
       1.0,
       () => setIsSpeaking(true),
@@ -112,20 +115,44 @@ export function MessageBubble({ message }: MessageBubbleProps) {
                 {message.intent}
               </span>
             )}
+            {langObj && (
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-primary/10 text-primary font-bold">
+                {langObj.nativeLabel}
+              </span>
+            )}
           </div>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
+            {/* Live audio speaking wave bars */}
+            {isSpeaking && (
+              <div className="flex items-center gap-0.5 px-2 py-1 rounded-lg bg-primary/10 border border-primary/20">
+                <span className="w-1 h-3 bg-primary rounded-full animate-[pulse_0.4s_ease-in-out_infinite]" />
+                <span className="w-1 h-4 bg-sky-400 rounded-full animate-[pulse_0.6s_ease-in-out_infinite_0.1s]" />
+                <span className="w-1 h-2 bg-indigo-500 rounded-full animate-[pulse_0.5s_ease-in-out_infinite_0.2s]" />
+                <span className="text-[10px] font-bold text-primary ml-1">Speaking</span>
+              </div>
+            )}
+
+            {/* Read Aloud Button */}
             <button
+              type="button"
               onClick={handleSpeak}
-              className={`p-1.5 rounded-lg border transition-colors ${
-                isSpeaking ? 'bg-primary text-primary-foreground' : 'hover:bg-accent text-muted-foreground'
+              className={`p-1.5 rounded-lg border transition-colors flex items-center gap-1 ${
+                isSpeaking
+                  ? 'bg-primary text-primary-foreground shadow-sm shadow-primary/30'
+                  : 'hover:bg-accent text-muted-foreground'
               }`}
-              title={isSpeaking ? 'Stop speaking' : 'Read aloud with Voice'}
+              title={isSpeaking ? t.stopSpeaking : `${t.readAloud} (${langObj?.label || 'Voice'})`}
             >
               {isSpeaking ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+              <span className="text-[10px] font-semibold hidden md:inline">
+                {isSpeaking ? 'Stop' : 'Listen'}
+              </span>
             </button>
 
+            {/* Copy Button */}
             <button
+              type="button"
               onClick={handleCopy}
               className="p-1.5 rounded-lg border hover:bg-accent text-muted-foreground transition-colors"
               title="Copy answer"

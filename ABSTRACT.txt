@@ -42,11 +42,14 @@ Key Pillars of the Solution:
    and Forecasting - WRF, and INSAT-3D satellites) and presents an explainable
    "Why this advice?" scientific rationale.
 
-2. Multilingual & Rural Accessibility:
-   Full natural language processing and Web Speech API voice interaction (Speech-
-   to-Text and Text-to-Speech) across 9 Indian languages: English, Tamil (தமிழ்),
-   Hindi (हिन्दी), Telugu (తెలుగు), Malayalam (മലയാളം), Kannada (ಕನ್ನಡ),
-   Bengali (বাংলা), Marathi (मराठी), and Gujarati (ગુજરાતી).
+2. OpenAI Whisper Neural Voice AI & 9-Language Multilingual Accessibility:
+   Full natural language processing and Speech-to-Ask voice interaction across 9
+   Indian languages: English, Tamil (தமிழ்), Hindi (हिन्दी), Telugu (తెలుగు),
+   Malayalam (മലയാളം), Kannada (ಕನ್ನಡ), Bengali (বাংলা), Marathi (मराठी), and
+   Gujarati (ગુજરાતી). Features a Dual Speech Engine (OpenAI Whisper Neural AI +
+   Web Speech streaming), real-time acoustic waveform visualizers, Text-to-Speech
+   (TTS) audio broadcasts, and a global Voice Search Modal accessible anywhere in
+   the platform.
 
 3. GIS Weather & Hazard Visualization:
    An interactive Leaflet/MapLibre GIS map with simulated Doppler radar layers,
@@ -66,6 +69,9 @@ Key Pillars of the Solution:
 3. TECHNICAL ARCHITECTURE & IMPLEMENTATION
 --------------------------------------------------------------------------------
 - Frontend: Next.js 14.2 (App Router), TypeScript, Tailwind CSS, Recharts, Leaflet GIS.
+- Voice AI: OpenAI Whisper Neural Speech-to-Text API (/api/assistant/transcribe),
+  MediaRecorder audio capture with Web Audio AnalyserNode waveform telemetry, and
+  multilingual Web Speech synthesis.
 - Backend: Modular FastAPI (Python) with Provider Adapters (IMD, GFS, Open-Meteo, Mock),
   Pydantic V2 schemas, and RAG disaster knowledge retrieval.
 - Demo Reliability: Out-of-the-box centralized synthetic datasets for 25+ Indian
@@ -76,10 +82,10 @@ Key Pillars of the Solution:
 --------------------------------------------------------------------------------
 4. CONCLUSION & IMPACT
 --------------------------------------------------------------------------------
-WeatherGPT democratizes meteorological science across India by bridging the gap
-between complex supercomputing forecast models and everyday vernacular decision-
-making. By providing timely, explainable, and actionable early warnings, WeatherGPT
-minimizes agricultural losses, mitigates disaster risks, and empowers over a billion
-citizens with intelligent, conversational weather awareness.
+WeatherGPT democratizes meteorological science across India by eliminating language
+and literacy barriers. By enabling any citizen or farmer to ask questions by voice
+in their mother tongue and receive immediate, grounded, explainable early warnings,
+WeatherGPT minimizes agricultural losses, mitigates disaster risks, and empowers over
+a billion citizens with intelligent conversational weather awareness.
 
 ================================================================================

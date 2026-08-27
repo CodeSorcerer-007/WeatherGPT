@@ -9,6 +9,8 @@ import { usePersona } from '@/context/PersonaContext';
 import { CurrentConditionsCard } from '@/components/dashboard/CurrentConditionsCard';
 import { WeatherInsightsCarousel } from '@/components/dashboard/WeatherInsightsCarousel';
 import { SectorAdvisoryCard } from '@/components/dashboard/SectorAdvisoryCard';
+import { VoiceSearchModal } from '@/components/assistant/VoiceSearchModal';
+import { SAMPLE_VOICE_PROMPTS } from '@/lib/speechUtils';
 import {
   Bot,
   Send,
@@ -24,6 +26,7 @@ import {
   Zap,
   Layers,
   Globe,
+  Radio,
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -33,6 +36,7 @@ export default function HomePage() {
   const { activePersonaInfo } = usePersona();
 
   const [promptInput, setPromptInput] = useState('');
+  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,13 +44,14 @@ export default function HomePage() {
     router.push(`/assistant?q=${encodeURIComponent(promptInput.trim())}`);
   };
 
-  const samplePrompts = [
-    `Will it rain in ${currentLocation.name} tomorrow?`,
-    'Is there any cyclone approaching Tamil Nadu?',
-    'Should I irrigate my paddy field today?',
-    'What should I do during heavy waterlogging?',
-    'Show rainfall and heatwave trends for last 10 years',
-  ];
+  const samplePrompts =
+    SAMPLE_VOICE_PROMPTS[language] || [
+      `Will it rain in ${currentLocation.name} tomorrow?`,
+      'Is there any cyclone approaching Tamil Nadu?',
+      'Should I irrigate my paddy field today?',
+      'What should I do during heavy waterlogging?',
+      'Show rainfall and heatwave trends for last 10 years',
+    ];
 
   const quickFeatures = [
     {
@@ -59,7 +64,7 @@ export default function HomePage() {
     {
       href: '/assistant',
       title: 'AI Conversational Assistant',
-      desc: 'Grounded intelligence with voice in 9 Indian languages.',
+      desc: 'Grounded intelligence with Whisper voice in 9 Indian languages.',
       icon: Bot,
       color: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
     },
@@ -118,43 +123,61 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* Central Natural Language Prompt Box */}
-        <form
-          onSubmit={handleSearchSubmit}
-          className="max-w-2xl mx-auto relative flex items-center shadow-xl"
-        >
-          <div className="relative w-full flex items-center">
-            <Bot className="absolute left-4 w-5 h-5 text-primary" />
-            <input
-              type="text"
-              value={promptInput}
-              onChange={(e) => setPromptInput(e.target.value)}
-              placeholder={t.askPlaceholder}
-              className="w-full pl-12 pr-28 py-4 rounded-2xl border bg-card/90 backdrop-blur-xl text-sm sm:text-base focus:ring-2 focus:ring-primary focus:outline-none shadow-2xl"
-            />
-            <div className="absolute right-2 flex items-center gap-1.5">
-              <button
-                type="button"
-                onClick={() => router.push('/assistant')}
-                className="p-2.5 rounded-xl border bg-accent/40 hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
-                title="Voice Input"
-              >
-                <Mic className="w-4 h-4 text-blue-400" />
-              </button>
-              <button
-                type="submit"
-                className="px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs sm:text-sm shadow-md transition-all flex items-center gap-1.5"
-              >
-                <span>Ask</span>
-                <Send className="w-3.5 h-3.5" />
-              </button>
+        {/* Central Natural Language / Speech Prompt Box */}
+        <div className="max-w-2xl mx-auto space-y-2">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="relative flex items-center shadow-xl"
+          >
+            <div className="relative w-full flex items-center">
+              <Bot className="absolute left-4 w-5 h-5 text-primary" />
+              <input
+                type="text"
+                value={promptInput}
+                onChange={(e) => setPromptInput(e.target.value)}
+                placeholder={t.askPlaceholder}
+                className="w-full pl-12 pr-32 py-4 rounded-2xl border bg-card/90 backdrop-blur-xl text-sm sm:text-base focus:ring-2 focus:ring-primary focus:outline-none shadow-2xl"
+              />
+              <div className="absolute right-2 flex items-center gap-1.5">
+                {/* Voice Query Microphone Button */}
+                <button
+                  type="button"
+                  onClick={() => setIsVoiceModalOpen(true)}
+                  className="p-2.5 rounded-xl border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary transition-all shadow-sm flex items-center gap-1"
+                  title="Speak in your language (Voice Query)"
+                >
+                  <Mic className="w-4 h-4 text-blue-500 animate-pulse" />
+                  <span className="text-[11px] font-bold hidden sm:inline">Voice</span>
+                </button>
+
+                {/* Submit Text Button */}
+                <button
+                  type="submit"
+                  className="px-3.5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs sm:text-sm shadow-md transition-all flex items-center gap-1.5"
+                >
+                  <span>Ask</span>
+                  <Send className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
+          </form>
+
+          {/* 9 Languages Voice Badge */}
+          <div className="flex items-center justify-center gap-2 text-[11px] text-muted-foreground pt-1">
+            <button
+              type="button"
+              onClick={() => setIsVoiceModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/40 border hover:bg-accent/70 transition-colors text-primary font-medium cursor-pointer"
+            >
+              <Radio className="w-3 h-3 text-rose-500 animate-ping" />
+              <span>Voice Support in 9 Indian Languages (Whisper Neural AI)</span>
+            </button>
           </div>
-        </form>
+        </div>
 
         {/* Sample Prompt Chips */}
         <div className="flex flex-wrap items-center justify-center gap-2 pt-2 max-w-3xl mx-auto">
-          {samplePrompts.map((prompt, i) => (
+          {samplePrompts.slice(0, 4).map((prompt, i) => (
             <button
               key={i}
               onClick={() => router.push(`/assistant?q=${encodeURIComponent(prompt)}`)}
@@ -218,6 +241,13 @@ export default function HomePage() {
 
       {/* Dynamic Actionable Insights */}
       <WeatherInsightsCarousel />
+
+      {/* Voice Search Modal */}
+      <VoiceSearchModal
+        isOpen={isVoiceModalOpen}
+        onClose={() => setIsVoiceModalOpen(false)}
+        initialLanguage={language}
+      />
     </div>
   );
 }
